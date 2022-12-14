@@ -1,5 +1,6 @@
 import server from "../main.js";
 import request from "supertest";
+import { hotels } from "../controller/hotelController.js";
 
 describe("Hotel Routes Test", () => {
   describe("Get All Route", () => {
@@ -26,6 +27,47 @@ describe("Hotel Routes Test", () => {
     // Unsere Rückgabe hat Inhalt
     test("return JSON", () => {
       expect(response.body.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe("Get One Route", () => {
+    test("Right Id", async () => {
+      const response = await request(server).get(
+        "/hotels/73947595/?api_key=040"
+      );
+      expect(response.statusCode).toBe(200);
+    });
+    test("Wrong Id", async () => {
+      const response = await request(server).get(
+        "/hotels/739475975/?api_key=040"
+      );
+      expect(response.statusCode).toBe(404);
+    });
+    test("Test Id", async () => {
+      const hotelId = hotels.map((hotel) => hotel.id);
+      const response = await request(server).get(
+        `/hotels/${hotelId[1]}/?api_key=040`
+      );
+      expect(response.body.id).toBe(hotelId[1]);
+    });
+    test("return an object", async () => {
+      const hotelId = 73947595;
+      const response = await request(server).get(
+        `/hotels/${hotelId}/?api_key=040`
+      );
+      expect(typeof response.body).toBe("object");
+    });
+  });
+
+  describe("delete One Route", () => {
+    test("Deleted Id", async () => {
+      const hotelId = hotels.map((hotel) => hotel.id);
+      const response = await request(server).delete(
+        `/hotels/${hotelId[2]}/?api_key=040`
+      );
+      const responseAll = await request(server).get("/hotels/?api_key=040");
+      const deletedEl = responseAll.body.find((el) => el.id === hotelId[2]);
+      expect(deletedEl).toBeUndefined();
     });
   });
 
