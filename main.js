@@ -7,6 +7,8 @@ const port = 4002;
 
 const apiKey = "040";
 
+server.use(express.json());
+
 server.use((req, res, next) => {
   if (req.query.api_key === apiKey) {
     next();

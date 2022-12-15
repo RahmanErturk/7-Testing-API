@@ -30,7 +30,14 @@ export function getOne(req, res) {
   console.log(req.params.id);
 }
 
-export function saveOne() {}
+export function saveOne(req, res) {
+  if (!req.body || Object.keys(req.body).length === 0) {
+    res.status(406).send("Error");
+  } else {
+    hotels.push(req.body);
+    res.status(201).send(hotels);
+  }
+}
 
 export function editOne() {}
 

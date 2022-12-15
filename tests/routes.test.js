@@ -59,6 +59,26 @@ describe("Hotel Routes Test", () => {
     });
   });
 
+  describe("Save One Route", () => {
+    //Wenn der request body keinen Inhalt hat, soll ein Fehler kommen
+    test("empty body returns 406", async () => {
+      const response = await request(server)
+        .post("/hotels?api_key=040")
+        .send({});
+      expect(response.statusCode).toBe(406);
+    });
+
+    //Wenn das richtige Objekt übergeben wird, soll 201 kommen
+    test("successful insert gives 201", async () => {
+      const response = await request(server).post("/hotels?api_key=040").send({
+        id: 3749574593,
+        name: "Test-Hotel",
+        city: "Berlin",
+      });
+      expect(response.statusCode).toBe(201);
+    });
+  });
+
   describe("delete One Route", () => {
     test("Deleted Id", async () => {
       const hotelId = hotels.map((hotel) => hotel.id);
